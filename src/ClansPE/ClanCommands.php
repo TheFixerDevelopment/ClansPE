@@ -367,71 +367,7 @@ class ClanCommands {
                             return true;
                         }
                     }
-
-
-
-                    /////////////////////////////// CLAIM ///////////////////////////////
-                    /*
-                    if (strtolower($args[0]) == 'claim') {
-                        if (!$this->plugin->isInFaction($playerName)) {
-                            $sender->sendMessage($this->plugin->formatMessage("§cYou must be in a faction."));
-                            return true;
-                        }
-                        if (!$this->plugin->isLeader($playerName)) {
-                            $sender->sendMessage($this->plugin->formatMessage("§cYou must be leader to use this."));
-                            return true;
-                        }
-                        if (!in_array($sender->getPlayer()->getLevel()->getName(), $this->plugin->prefs->get("ClaimWorlds"))) {
-                            $sender->sendMessage($this->plugin->formatMessage("§cYou can only claim in Faction Worlds: " . implode(" ", $this->plugin->prefs->get("ClaimWorlds"))));
-                            return true;
-                        }
-
-                        if ($this->plugin->inOwnPlot($sender)) {
-                            $sender->sendMessage($this->plugin->formatMessage("§cYour faction has already claimed this area."));
-                            return true;
-                        }
-                        $faction = $this->plugin->getPlayerFaction($sender->getPlayer()->getName());
-                        if ($this->plugin->getNumberOfPlayers($faction) < $this->plugin->prefs->get("PlayersNeededInFactionToClaimAPlot")) {
-
-                            $needed_players = $this->plugin->prefs->get("PlayersNeededInFactionToClaimAPlot") -
-                                    $this->plugin->getNumberOfPlayers($faction);
-                            $sender->sendMessage($this->plugin->formatMessage("§cYou need §4$needed_players §cmore players in your faction to claim a faction plot"));
-                            return true;
-                        }
-                        if ($this->plugin->getFactionPower($faction) < $this->plugin->prefs->get("PowerNeededToClaimAPlot")) {
-                            $needed_power = $this->plugin->prefs->get("PowerNeededToClaimAPlot");
-                            $faction_power = $this->plugin->getFactionPower($faction);
-                            $sender->sendMessage($this->plugin->formatMessage("§cYour faction doesn't have enough STR to claim a land."));
-                            $sender->sendMessage($this->plugin->formatMessage("§4$needed_power §cSTR is required but your faction has only §4$faction_power §cSTR."));
-                            return true;
-                        }
-
-                        $x = floor($sender->getX());
-                        $y = floor($sender->getY());
-                        $z = floor($sender->getZ());
-                        if ($this->plugin->drawPlot($sender, $faction, $x, $y, $z, $sender->getPlayer()->getLevel(), $this->plugin->prefs->get("PlotSize")) == false) {
-
-                            return true;
-                        }
-
-                        $sender->sendMessage($this->plugin->formatMessage("Getting your coordinates...", true));
-                        $plot_size = $this->plugin->prefs->get("PlotSize");
-                        $faction_power = $this->plugin->getFactionPower($faction);
-                        $sender->sendMessage($this->plugin->formatMessage("Your land has been claimed.", true));
-                    }
-                    if (strtolower($args[0]) == 'plotinfo') {
-                        $x = floor($sender->getX());
-                        $y = floor($sender->getY());
-                        $z = floor($sender->getZ());
-                        if (!$this->plugin->isInPlot($sender)) {
-                            $sender->sendMessage($this->plugin->formatMessage("§5This plot is not claimed by anyone. §dYou can claim it by typing §5/f claim", true));
-                            return true;
-                        }
-
-                        $fac = $this->plugin->factionFromPoint($x, $z, $sender->getPlayer()->getLevel()->getName());
-                        $power = $this->plugin->getFactionPower($fac);
-                        $sender->sendMessage($this->plugin->formatMessage("§aThis plot is claimed by §2$fac §awith §2$power §aSTR"));
-                    }*/
+		    
                     if (strtolower($args[0]) == 'top') {
                         $this->plugin->sendListOfTop10ClansTo($sender);
                     }
@@ -486,84 +422,6 @@ class ClanCommands {
                         $clan = $this->plugin->getPlayerClan($args[1]);
                         $sender->sendMessage($this->plugin->formatMessage("§3-$args[1] §bis in the clan: §3$clan-", true));
                     }
-/*Removing
-                    if (strtolower($args[0]) == 'overclaim') {
-                        if (!$this->plugin->isInFaction($playerName)) {
-                            $sender->sendMessage($this->plugin->formatMessage("§cYou must be in a faction."));
-                            return true;
-                        }
-                        if (!$this->plugin->isLeader($playerName)) {
-                            $sender->sendMessage($this->plugin->formatMessage("§cYou must be leader to use this."));
-                            return true;
-                        }
-                        $faction = $this->plugin->getPlayerFaction($playerName);
-                        if ($this->plugin->getNumberOfPlayers($faction) < $this->plugin->prefs->get("PlayersNeededInFactionToClaimAPlot")) {
-
-                            $needed_players = $this->plugin->prefs->get("PlayersNeededInFactionToClaimAPlot") -
-                                    $this->plugin->getNumberOfPlayers($faction);
-                            $sender->sendMessage($this->plugin->formatMessage("§cYou need §4$needed_players §cmore players in your faction to overclaim a faction plot"));
-                            return true;
-                        }
-                        if ($this->plugin->getFactionPower($faction) < $this->plugin->prefs->get("PowerNeededToClaimAPlot")) {
-                            $needed_power = $this->plugin->prefs->get("PowerNeededToClaimAPlot");
-                            $faction_power = $this->plugin->getFactionPower($faction);
-                            $sender->sendMessage($this->plugin->formatMessage("§cYour faction doesn't have enough STR to claim a land."));
-                            $sender->sendMessage($this->plugin->formatMessage("§4$needed_power §cSTR is required but your faction has only §4$faction_power §cSTR."));
-                            return true;
-                        }
-                        $sender->sendMessage($this->plugin->formatMessage("§bGetting your coordinates... Please wait..", true));
-                        $x = floor($sender->getX());
-                        $y = floor($sender->getY());
-                        $z = floor($sender->getZ());
-                        if ($this->plugin->prefs->get("EnableOverClaim")) {
-                            if ($this->plugin->isInPlot($sender)) {
-                                $faction_victim = $this->plugin->factionFromPoint($x, $z, $sender->getPlayer()->getLevel()->getName());
-                                $faction_victim_power = $this->plugin->getFactionPower($faction_victim);
-                                $faction_ours = $this->plugin->getPlayerFaction($playerName);
-                                $faction_ours_power = $this->plugin->getFactionPower($faction_ours);
-                                if ($this->plugin->inOwnPlot($sender)) {
-                                    $sender->sendMessage($this->plugin->formatMessage("§cYou can't overclaim your own plot."));
-                                    return true;
-                                } else {
-                                    if ($faction_ours_power < $faction_victim_power) {
-                                        $sender->sendMessage($this->plugin->formatMessage("§cYou can't overclaim the plot of §4$faction_victim §cbecause your STR is lower than theirs."));
-                                        return true;
-                                    } else {
-                                        $this->plugin->db->query("DELETE FROM plots WHERE faction='$faction_ours';");
-                                        $this->plugin->db->query("DELETE FROM plots WHERE faction='$faction_victim';");
-                                        $arm = (($this->plugin->prefs->get("PlotSize")) - 1) / 2;
-                                        $this->plugin->newPlot($faction_ours, $x1 + $arm, $z1 + $arm, $x2 - $arm, $z2 - $arm);
-                                        $sender->sendMessage($this->plugin->formatMessage("The land of $faction_victim has been claimed. It is now yours.", true));
-                                        return true;
-                                    }
-                                }
-                            } else {
-                                $sender->sendMessage($this->plugin->formatMessage("§cYou must be in a faction plot."));
-                                return true;
-                            }
-                        } else {
-                            $sender->sendMessage($this->plugin->formatMessage("§cOverclaiming is disabled."));
-                            return true;
-                        }
-                    }
-
-
-                    /////////////////////////////// UNCLAIM ///////////////////////////////
-
-                    if (strtolower($args[0]) == "unclaim") {
-                        if (!$this->plugin->isInFaction($sender->getName())) {
-                            $sender->sendMessage($this->plugin->formatMessage("§cYou must be in a faction"));
-                            return true;
-                        }
-                        if (!$this->plugin->isLeader($sender->getName())) {
-                            $sender->sendMessage($this->plugin->formatMessage("§cYou must be leader to use this"));
-                            return true;
-                        }
-                        $faction = $this->plugin->getPlayerFaction($sender->getName());
-                        $this->plugin->db->query("DELETE FROM plots WHERE faction='$faction';");
-                        $sender->sendMessage($this->plugin->formatMessage("§2Your land has been unclaimed", true));
-                    }
-*/
                     /////////////////////////////// DESCRIPTION ///////////////////////////////
 
                     if (strtolower($args[0]) == "desc") {
@@ -672,73 +530,8 @@ class ClanCommands {
                         } else {
                             $sender->sendMessage($this->plugin->formatMessage("§cYou must delete the clan or give\nleadership to someone else first"));
                         }
-                    }
-/*Removing
-                    /////////////////////////////// SETHOME ///////////////////////////////
-
-                    if (strtolower($args[0] == "sethome")) {
-                        if (!$this->plugin->isInFaction($playerName)) {
-                            $sender->sendMessage($this->plugin->formatMessage("§cYou must be in a faction to do this"));
-                            return true;
-                        }
-                        if (!$this->plugin->isLeader($playerName)) {
-                            $sender->sendMessage($this->plugin->formatMessage("§cYou must be leader to set home"));
-                            return true;
-                        }
-                        $factionName = $this->plugin->getPlayerFaction($sender->getName());
-                        $stmt = $this->plugin->db->prepare("INSERT OR REPLACE INTO home (faction, x, y, z, world) VALUES (:faction, :x, :y, :z, :world);");
-                        $stmt->bindValue(":faction", $factionName);
-                        $stmt->bindValue(":x", $sender->getX());
-                        $stmt->bindValue(":y", $sender->getY());
-                        $stmt->bindValue(":z", $sender->getZ());
-                        $stmt->bindValue(":world", $sender->getLevel()->getName());
-                        $result = $stmt->execute();
-                        $sender->sendMessage($this->plugin->formatMessage("§aHome set succesfully. §bNow, you can use: §3/f home", true));
-                    }
-
-                    /////////////////////////////// UNSETHOME ///////////////////////////////
-
-                    if (strtolower($args[0] == "unsethome")) {
-                        if (!$this->plugin->isInFaction($playerName)) {
-                            $sender->sendMessage($this->plugin->formatMessage("§cYou must be in a faction to do this"));
-                            return true;
-                        }
-                        if (!$this->plugin->isLeader($playerName)) {
-                            $sender->sendMessage($this->plugin->formatMessage("§cYou must be leader to unset home"));
-                            return true;
-                        }
-                        $faction = $this->plugin->getPlayerFaction($sender->getName());
-                        $this->plugin->db->query("DELETE FROM home WHERE faction = '$faction';");
-                        $sender->sendMessage($this->plugin->formatMessage("§aHome unset succesfully. §3/f home §bwas removed from your faction.", true));
-                    }
-
-                    /////////////////////////////// HOME ///////////////////////////////
-
-                    if (strtolower($args[0] == "home")) {
-                        if (!$this->plugin->isInFaction($playerName)) {
-                            $sender->sendMessage($this->plugin->formatMessage("§cYou must be in a faction to do this"));
-                            return true;
-                        }
-                        $faction = $this->plugin->getPlayerFaction($sender->getName());
-                        $result = $this->plugin->db->query("SELECT * FROM home WHERE faction = '$faction';");
-                        $array = $result->fetchArray(SQLITE3_ASSOC);
-                        if (!empty($array)) {
-                        	if ($array['world'] === null || $array['world'] === ""){
-								$sender->sendMessage($this->plugin->formatMessage("Home is missing world name, please delete and make it again"));
-								return true;
-							}
-							if(Server::getInstance()->loadLevel($array['world']) === false){
-								$sender->sendMessage($this->plugin->formatMessage("The world '" . $array['world'] .  "'' could not be found"));
-								return true;
-							}
-							$level = Server::getInstance()->getLevelByName($array['world']);
-                            $sender->getPlayer()->teleport(new Position($array['x'], $array['y'], $array['z'], $level));
-                            $sender->sendMessage($this->plugin->formatMessage("§bTeleported to your faction home", true));
-                        } else {
-                            $sender->sendMessage($this->plugin->formatMessage("§cHome is currently not set Set it by using /f sethome"));
-                        }
-                    }
-*/
+		    }
+		    
                     /////////////////////////////// MEMBERS/OFFICERS/LEADER AND THEIR STATUSES ///////////////////////////////
                     if (strtolower($args[0] == "ourmembers")) {
                         if (!$this->plugin->isInClan($playerName)) {
@@ -956,23 +749,7 @@ class ClanCommands {
                         if ($leader instanceof Player) {
                             $leader->sendMessage($this->plugin->formatMessage("§2The leader of §5$clan §2broke the alliance with your clan §5$args[1]", false));
                         }
-                    }/*Disabled // Removed.
-                    if (strtolower($args[0] == "forceunclaim")) {
-                        if (!isset($args[1])) {
-                            $sender->sendMessage($this->plugin->formatMessage("§bPlease use: §3/f forceunclaim <faction>"));
-                            return true;
-                        }
-                        if (!$this->plugin->factionExists($args[1])) {
-                            $sender->sendMessage($this->plugin->formatMessage("§cThe requested faction doesn't exist"));
-                            return true;
-                        }
-                        if (!($sender->isOp())) {
-                            $sender->sendMessage($this->plugin->formatMessage("§cYou must be OP to do this."));
-                            return true;
-                        }
-                        $sender->sendMessage($this->plugin->formatMessage("§aSuccessfully unclaimed the unwanted plot of §2$args[1]"));
-                        $this->plugin->db->query("DELETE FROM plots WHERE faction='$args[1]';");
-                    }*/
+                    }
 
                     if (strtolower($args[0] == "allies")) {
                         if (!isset($args[1])) {
@@ -1061,7 +838,7 @@ class ClanCommands {
                     /////////////////////////////// ABOUT ///////////////////////////////
 
                     if (strtolower($args[0] == 'about')) {
-                        $sender->sendMessage(TextFormat::GREEN . "[ORIGINAL] FactionsPro Plugin, by " . TextFormat::BOLD . "Tethered_");
+                        $sender->sendMessage(TextFormat::GREEN . "[ORIGINAL] Based from FactionsPro Plugin, by " . TextFormat::BOLD . "Tethered_");
                         $sender->sendMessage(TextFormat::AQUA . "[MODDED] Plugin name: ClansPE, made by " . TextFormat::BOLD . "VMPE Development Team");
                     }
                     ////////////////////////////// CHAT ////////////////////////////////
