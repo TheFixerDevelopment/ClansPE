@@ -3,11 +3,11 @@ author: VMPE Development Team
 description: A ClansPE plugin.
 version: 1.0.0-Beta
 main: ClansPE\ClanMain
-api: [3.0.0-ALPHA9, 3.0.0-ALPHA10]
+api: [3.0.0-ALPHA11, 3.0.0-ALPHA12]
 softdepend: ["PureChat", "AntiSpamPro"]
 commands:
   clans:
-    description: use /clans help for all parameters
+    description: use /clans help for a list of commands.
     permission: clanspe.command
 permissions:
   clanspe.command:
